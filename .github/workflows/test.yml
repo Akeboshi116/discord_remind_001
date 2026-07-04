@@ -1,0 +1,41 @@
+# ワークフロー名
+name: テスト通知
+
+# ワークフローを実行する条件
+on:
+
+  # GitHub Actions画面から手動実行できるようにする
+  workflow_dispatch:
+
+# 実行する処理
+jobs:
+
+  # ジョブ名
+  reminder:
+
+    # GitHubが用意しているUbuntu環境で実行
+    runs-on: ubuntu-latest
+
+    # 実行手順
+    steps:
+
+      # リポジトリ内のファイルを取得
+      - uses: actions/checkout@v4
+
+      # Pythonをインストール
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # requirements.txtに書かれているライブラリをインストール
+      - run: pip install -r requirements.txt
+
+      # Pythonプログラムを実行
+      - run: python main.py
+        env:
+
+          # GitHub Secretsに登録したWebhook URLを環境変数として渡す
+          WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
+
+          # main.pyへ送るテストメッセージ
+          MESSAGE: "テスト通知～"
