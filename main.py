@@ -4,46 +4,36 @@ import os
 # DiscordへHTTPリクエストを送るためのライブラリ
 import requests
 
-# 日時を扱うライブラリ
-from datetime import datetime, timedelta, timezone
-
 # GitHub Secretsに登録したWebhook URLを取得
 WEBHOOK_URL = os.environ["WEBHOOK_URL"]
+
+# GitHub Actionsから渡されたメッセージを取得
+MESSAGE = os.environ["MESSAGE"]
 
 # メンションしたいユーザーID
 USER_ID = "1097404022228525137"
 
-# 日本時間(JST = UTC+9)を設定
-jst = timezone(timedelta(hours=9))
+# Discordへ送信する内容を作成
+message = {
+    # ユーザーをメンションしてメッセージを送信
+    "content": f"<@{USER_ID}> 🔔 {MESSAGE}",
 
-# 現在の日本時間を取得
-now = datetime.now(jst)
-
-# 現在時刻を「08:50」のような文字列に変換
-current = now.strftime("%H:%M")
-
-# 時間ごとの通知メッセージ
-messages = {
-    "08:50": "1限開始10分前",
-    "10:40": "2限開始10分前",
-    "13:10": "3限開始10分前",
-    "15:00": "4限開始10分前",
-    "16:50": "さっさと帰れ～",
-    "19:00": "晩御飯の時間",
-    "23:00": "なんと、もう11時",
-    "00:00": "さっさと寝ろ～"
+    # 指定したユーザーへのメンションを有効にする
+    "allowed_mentions": {
+        "users": [USER_ID]
+    }
 }
 
-# 現在時刻に対応するメッセージがあれば送信
-if current in messages:
+# Discord Webhookへ通知を送信
+response = requests.post(
+    WEBHOOK_URL,
+    json=message
+)
 
-    message = {
-        "content": f"<@{USER_ID}> 🔔 {messages[current]}",
-        "allowed_mentions": {
-            "users": [USER_ID]
-        }
-    }
+# ステータスコードを表示
+# 204なら送信成功
+print(f"Status Code: {response.status_code}")
 
-    response = requests.post(WEBHOOK_URL, json=message)
-
-    print(response.status_code)
+# エラーが発生した場合は内容も表示
+if response.status_code != 204:
+    print(response.text)
