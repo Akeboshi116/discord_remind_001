@@ -10,6 +10,9 @@ from datetime import datetime, timedelta, timezone
 # GitHub Secretsに登録したWebhook URLを取得
 WEBHOOK_URL = os.environ["WEBHOOK_URL"]
 
+# メンションしたいユーザーID
+USER_ID = "1097404022228525137"
+
 # 日本時間(JST = UTC+9)を設定
 jst = timezone(timedelta(hours=9))
 
@@ -21,26 +24,26 @@ current = now.strftime("%H:%M")
 
 # 時間ごとの通知メッセージ
 messages = {
-    "08:50": "1限開始10分前 @akeboshi1106",
-    "10:40": "2限開始10分前 @akeboshi1106",
-    "12:39": "3限開始10分前 @akeboshi1106",
-    "15:00": "4限開始10分前 @akeboshi1106",
-    "16:50": "さっさと帰れ～ @akeboshi1106",
-    "19:00": "晩御飯の時間 @akeboshi1106",
-    "23:00": "なんと、もう11時 @akeboshi1106",
-    "00:00": "さっさと寝ろ～ @akeboshi1106"
+    "08:50": "1限開始10分前",
+    "10:40": "2限開始10分前",
+    "12:46": "3限開始10分前",
+    "15:00": "4限開始10分前",
+    "16:50": "さっさと帰れ～",
+    "19:00": "晩御飯の時間",
+    "23:00": "なんと、もう11時",
+    "00:00": "さっさと寝ろ～"
 }
 
-# 現在時刻が辞書に登録されている場合のみ通知する
+# 現在時刻に対応するメッセージがあれば送信
 if current in messages:
 
-    # Discordへ送信する内容
     message = {
-        "content": messages[current]
+        "content": f"<@{USER_ID}> 🔔 {messages[current]}",
+        "allowed_mentions": {
+            "users": [USER_ID]
+        }
     }
 
-    # WebhookへPOSTして通知を送信
     response = requests.post(WEBHOOK_URL, json=message)
 
-    # 成功したか確認（200系なら成功）
     print(response.status_code)
