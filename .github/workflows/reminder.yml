@@ -1,12 +1,9 @@
-# ワークフロー名（GitHub Actions画面に表示される）
+# ワークフロー名
 name: Discord Reminder
 
-# ワークフローを実行する条件
+# 実行条件
 on:
-
-  # 指定した時間に実行
   schedule:
-
     # 毎日 8:50 JST
     - cron: "50 23 * * *"
 
@@ -31,35 +28,104 @@ on:
     # 毎日 0:00 JST
     - cron: "0 15 * * *"
 
-  # Actions画面から手動実行できるようにする
+  # 手動実行も可能
   workflow_dispatch:
 
-# 実行する処理
 jobs:
+  reminder:
 
-  # ジョブ名
-  remind:
-
-    # GitHubが用意しているUbuntu環境を使用
+    # Ubuntu環境で実行
     runs-on: ubuntu-latest
 
-    # 実行手順
     steps:
 
-      # リポジトリのファイルを取得
+      # リポジトリを取得
       - uses: actions/checkout@v4
 
-      # Pythonをインストール
+      # Pythonをセットアップ
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
-      # requirements.txtに書かれたライブラリをインストール
+      # ライブラリをインストール
       - run: pip install -r requirements.txt
 
-      # Pythonプログラムを実行
-      - run: python main.py
+      # ==========================
+      # 8:50 JST
+      # ==========================
+      - name: 1限開始10分前
+        if: github.event.schedule == '50 23 * * *'
+        run: python main.py
         env:
-
-          # GitHub SecretsからWebhook URLを環境変数として渡す
           WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
+          MESSAGE: "1限開始10分前"
+
+      # ==========================
+      # 10:40 JST
+      # ==========================
+      - name: 2限開始10分前
+        if: github.event.schedule == '40 1 * * *'
+        run: python main.py
+        env:
+          WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
+          MESSAGE: "2限開始10分前"
+
+      # ==========================
+      # 13:10 JST
+      # ==========================
+      - name: 3限開始10分前
+        if: github.event.schedule == '10 4 * * *'
+        run: python main.py
+        env:
+          WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
+          MESSAGE: "3限開始10分前"
+
+      # ==========================
+      # 15:00 JST
+      # ==========================
+      - name: 4限開始10分前
+        if: github.event.schedule == '0 6 * * *'
+        run: python main.py
+        env:
+          WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
+          MESSAGE: "4限開始10分前"
+
+      # ==========================
+      # 16:50 JST
+      # ==========================
+      - name: 帰宅
+        if: github.event.schedule == '50 7 * * *'
+        run: python main.py
+        env:
+          WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
+          MESSAGE: "さっさと帰れ～"
+
+      # ==========================
+      # 19:00 JST
+      # ==========================
+      - name: 晩御飯
+        if: github.event.schedule == '0 10 * * *'
+        run: python main.py
+        env:
+          WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
+          MESSAGE: "晩御飯の時間"
+
+      # ==========================
+      # 23:00 JST
+      # ==========================
+      - name: 23時
+        if: github.event.schedule == '0 14 * * *'
+        run: python main.py
+        env:
+          WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
+          MESSAGE: "なんと、もう11時"
+
+      # ==========================
+      # 0:00 JST
+      # ==========================
+      - name: 就寝
+        if: github.event.schedule == '0 15 * * *'
+        run: python main.py
+        env:
+          WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
+          MESSAGE: "さっさと寝ろ～"
