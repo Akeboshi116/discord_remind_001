@@ -129,3 +129,13 @@ jobs:
         env:
           WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
           MESSAGE: "さっさと寝ろ～"
+
+      # ==========================
+      # 手動実行時のテスト通知
+      # ==========================
+      - name: テスト通知
+        if: github.event_name == 'workflow_dispatch'
+        run: python main.py
+        env:
+          WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
+          MESSAGE: "テスト通知～"
