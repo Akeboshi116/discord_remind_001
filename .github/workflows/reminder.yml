@@ -1,29 +1,65 @@
+# ワークフロー名（GitHub Actions画面に表示される）
 name: Discord Reminder
 
+# ワークフローを実行する条件
 on:
-  schedule:
-    # 毎日18:00（日本時間）
-    - cron: "0 9 * * *"
 
+  # 指定した時間に実行
+  schedule:
+
+    # 毎日 8:50 JST
+    - cron: "50 23 * * *"
+
+    # 毎日 10:40 JST
+    - cron: "40 1 * * *"
+
+    # 毎日 13:10 JST
+    - cron: "10 4 * * *"
+
+    # 毎日 15:00 JST
+    - cron: "0 6 * * *"
+
+    # 毎日 16:50 JST
+    - cron: "50 7 * * *"
+
+    # 毎日 19:00 JST
+    - cron: "0 10 * * *"
+
+    # 毎日 23:00 JST
+    - cron: "0 14 * * *"
+
+    # 毎日 0:00 JST
+    - cron: "0 15 * * *"
+
+  # Actions画面から手動実行できるようにする
   workflow_dispatch:
 
+# 実行する処理
 jobs:
+
+  # ジョブ名
   remind:
+
+    # GitHubが用意しているUbuntu環境を使用
     runs-on: ubuntu-latest
 
+    # 実行手順
     steps:
-      - name: リポジトリを取得
-        uses: actions/checkout@v4
 
-      - name: Pythonをセットアップ
-        uses: actions/setup-python@v5
+      # リポジトリのファイルを取得
+      - uses: actions/checkout@v4
+
+      # Pythonをインストール
+      - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
 
-      - name: ライブラリをインストール
-        run: pip install -r requirements.txt
+      # requirements.txtに書かれたライブラリをインストール
+      - run: pip install -r requirements.txt
 
-      - name: リマインダーを実行
+      # Pythonプログラムを実行
+      - run: python main.py
         env:
+
+          # GitHub SecretsからWebhook URLを環境変数として渡す
           WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
-        run: python main.py
