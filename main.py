@@ -23,7 +23,7 @@ current = now.strftime("%H:%M")
 messages = {
     "08:50": "1限開始10分前 @akeboshi1106",
     "10:40": "2限開始10分前 @akeboshi1106",
-    "13:10": "3限開始10分前 @akeboshi1106",
+    "12:39": "3限開始10分前 @akeboshi1106",
     "15:00": "4限開始10分前 @akeboshi1106",
     "16:50": "さっさと帰れ～ @akeboshi1106",
     "19:00": "晩御飯の時間 @akeboshi1106",
