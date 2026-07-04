@@ -1,20 +1,37 @@
+# ワークフロー名
 name: 2限開始10分前
 
+# 実行条件
 on:
+
   schedule:
+
+    # 毎日10:40(JST)
     - cron: "40 1 * * *"
+
+  # 手動実行を有効化
   workflow_dispatch:
 
 jobs:
+
   reminder:
+
     runs-on: ubuntu-latest
 
     steps:
+
+      # リポジトリを取得
       - uses: actions/checkout@v4
+
+      # Pythonを準備
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+
+      # ライブラリをインストール
       - run: pip install -r requirements.txt
+
+      # Pythonを実行
       - run: python main.py
         env:
           WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
