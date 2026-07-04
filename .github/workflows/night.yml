@@ -1,21 +1,46 @@
+# ワークフロー名
 name: 23時
 
+# ワークフローを実行する条件
 on:
+
+  # 毎日決まった時間に実行
   schedule:
+
+    # 毎日23:00(JST)
+    # GitHub ActionsはUTCなので14:00に設定
     - cron: "0 14 * * *"
+
+  # GitHubのActions画面から手動実行できるようにする
   workflow_dispatch:
 
+# 実行する処理
 jobs:
+
   reminder:
+
+    # Ubuntu環境で実行
     runs-on: ubuntu-latest
 
     steps:
+
+      # リポジトリを取得
       - uses: actions/checkout@v4
+
+      # Pythonをインストール
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
+
+      # 必要なライブラリをインストール
       - run: pip install -r requirements.txt
+
+      # Pythonプログラムを実行
       - run: python main.py
         env:
+
+          # GitHub SecretsからWebhook URLを取得
           WEBHOOK_URL: ${{ secrets.WEBHOOK_URL }}
+
+          # main.pyへ送るメッセージ
           MESSAGE: "なんと、もう11時"
